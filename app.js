@@ -1,8 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
+require("dotenv").config();
 
-//https is a native node module and so you don't need to install it 
+
 const https = require("https");
 
 const { response } = require("express");
@@ -37,7 +38,7 @@ app.post("/", function (req, res) {
     const url = "https://us10.api.mailchimp.com/3.0/lists/ab86d36b7b"
     const options = {
         method: "POST",
-        auth: "charles1:cf3b3175365ab0d6d60138e77366be29-us10"
+        auth: process.env.MC 
     }
 
     const request = https.request(url, options, function (response) {
@@ -52,20 +53,19 @@ app.post("/", function (req, res) {
 
         response.on("data", function (data) {
             console.log(JSON.parse(data));
-            
+
         });
     });
     request.write(jsonData);
     request.end();
 });
 
-//when the sign up fails, a click on the button on the failure page will redirect us to the homepage -- thanks to this code!
-app.post("/failure", function(req, res) {
+app.post("/failure", function (req, res) {
     res.redirect("/");
 });
 
-//heroku decides randomly the port to listen to. Hence, to enable Heroku do this, you type in process.env.PORT
-//Doing this, your app can't run locally again except you add || 3000
 app.listen(process.env.PORT || 3000, function () {
     console.log("server is running on port 3000.");
 });
+
+
